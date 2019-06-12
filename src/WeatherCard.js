@@ -4,6 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+
 const useStyles = makeStyles({
   card: {
     margin: '12px 0'
@@ -47,20 +48,20 @@ export default function WeatherCard(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">
+              <span className={classes.lightGrey}>Sunrise: </span>
+              {weatherData.sunrise}
+            </Typography>
+            <Typography variant="subtitle1">
+              <span className={classes.lightGrey}>Sunset: </span>
+              {weatherData.sunset}
+            </Typography>
+            <Typography variant="subtitle1">
               <span className={classes.lightGrey}>Wind: </span>
               {windSpeed} m/s, {windDirection}
             </Typography>
             <Typography variant="subtitle1">
               <span className={classes.lightGrey}>Humidity: </span>
               {weatherData.rh} %
-            </Typography>
-            <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Cloud coverage: </span>
-              {weatherData.clouds} %
-            </Typography>
-            <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Precipitation:</span>
-              {weatherData.precip.toFixed(2)} mm/hr
             </Typography>
           </Grid>
         </Grid>

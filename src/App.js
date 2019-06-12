@@ -3,40 +3,55 @@ import WeatherCard from './WeatherCard';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
 import './App.css';
+import AddCityDialog from './AddCityDialog';
 
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-
+const initialState = {
+  error: null,
+  isLoaded: false,
+  weathers: [],
+  cities: ['Paris']
+};
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      weather: []
-    };
+    this.state = initialState;
+  }
+  fetchCities(cities) {
+    this.setState({
+      weathers: initialState.weathers
+    });
+    cities.forEach(city => {
+      fetch(API_ENDPOINT + 'current?lang=en&city=' + city + '&key=' + API_KEY)
+        .then(res => res.json())
+        .then(
+          result => {
+            let weathers = JSON.parse(JSON.stringify(this.state.weathers));
+            weathers.push(result.data);
+            this.setState({
+              isLoaded: true,
+              weathers: weathers
+            });
+          },
+          error => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        );
+    });
   }
   componentDidMount() {
-    fetch(API_ENDPOINT + 'current?lang=en&city=Paris&city=boston&key=' + API_KEY)
-      .then(res => res.json())
-      .then(
-        result => {
-          console.log(result);
-          this.setState({
-            isLoaded: true,
-            weather: result.data
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      );
+    this.fetchCities(this.state.cities);
+  }
+  handleCityAdd(city) {
+    let newCities = [...this.state.cities];
+    newCities.push(city);
+    this.setState({ cities: newCities });
+    this.fetchCities(newCities);
   }
   render() {
     return (
@@ -46,13 +61,12 @@ class App extends React.Component {
             <Typography variant="h6" color="inherit" className="title">
               Weather App
             </Typography>
-            <Button variant="contained" color="secondary">
-              Add city
-              <AddIcon />
-            </Button>
+            <AddCityDialog onCityAdd={city => this.handleCityAdd(city)} />
           </Toolbar>
         </AppBar>
-        {this.state.isLoaded && <WeatherCard data={this.state.weather} />}
+        {this.state.weathers.map((weather, index) => (
+          <WeatherCard key={index} data={weather} />
+        ))}
       </div>
     );
   }
