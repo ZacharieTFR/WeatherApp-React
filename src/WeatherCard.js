@@ -13,6 +13,8 @@ const useStyles = makeStyles({
   }
 });
 
+const API_ICONS_URL = process.env.REACT_APP_API_ICONS_URL;
+
 export default function WeatherCard(props) {
   const classes = useStyles();
   if (!props) {
@@ -25,7 +27,7 @@ export default function WeatherCard(props) {
   const windSpeed = weatherData.wind_spd;
   const windDirection = weatherData.wind_cdir_full;
 
-  const iconUrl = 'https://www.weatherbit.io/static/img/icons/' + weatherData.weather.icon + '.png';
+  const iconUrl = API_ICONS_URL + weatherData.weather.icon + '.png';
   return (
     <Card className={classes.card}>
       <CardContent>

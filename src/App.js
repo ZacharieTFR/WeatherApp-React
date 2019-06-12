@@ -7,6 +7,9 @@ import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import './App.css';
 
+const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +20,7 @@ class App extends React.Component {
     };
   }
   componentDidMount() {
-    fetch('https://api.weatherbit.io/v2.0/current?lang=en&city=Paris&city=boston&key=HIDDEN_API_KEY')
+    fetch(API_ENDPOINT + 'current?lang=en&city=Paris&city=boston&key=' + API_KEY)
       .then(res => res.json())
       .then(
         result => {
