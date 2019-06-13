@@ -6,15 +6,16 @@ This app is under development with [ReactJS](https://reactjs.org/) + [Material-U
 
 The real-time weather is fetched from [weatherbit.io](https://weatherbit.io) API.
 
-## TODO:
+## TODO
 
-I will add the following days
+I will add in the following days:
 
 - [x] Add city
 - [x] Delete city
 - [ ] Save city list in local storage
-- [ ] Get current city based on location
+- [x] Get current city based on location
 - [ ] Add internalization
+- [ ] Clean and optimize project
 
 ## How to run
 

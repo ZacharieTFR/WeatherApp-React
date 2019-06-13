@@ -32,7 +32,6 @@ export default function DeleteCityDialog(props) {
   }
 
   function handleDelete(event) {
-    console.log(props);
     props.onCityDelete(props.city);
     setOpen(false);
   }
