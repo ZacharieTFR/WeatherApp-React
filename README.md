@@ -1,10 +1,10 @@
 ## Weather app
 
-Fetch real-time weather of choosen cities.
+Fetch real-time weather of chosen cities.
 
-This app is under development
+This app is under development with [ReactJS](https://reactjs.org/) + [Material-Ui](https://material-ui.com/) .
 
-The real-time weather is fetched from [weatherbit.io](https://weatherbit.io) API
+The real-time weather is fetched from [weatherbit.io](https://weatherbit.io) API.
 
 ## TODO:
 
