@@ -42,8 +42,8 @@ export default function WeatherCard(props) {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <DeleteCityDialog
-              onCityDelete={city => handleCityDelete(city)}
-              city={props.city}
+              onCityDelete={() => handleCityDelete(weatherData.city_name)}
+              city={weatherData.city_name}
             />
             <Typography variant="h5">
               {weatherData.city_name}, {weatherData.country_code}

@@ -110,12 +110,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const x = this.getCitiesFromLocalStorage();
+    this.getCitiesFromLocalStorage();
     this.getUserCoords();
   }
 
   handleCityAdd(city) {
-    let newCities = [...this.state.cities];
+    let newCities = this.state.cities;
     const alreadyExist = newCities.find(cty => cty === city);
     if (!alreadyExist) {
       newCities.push(city);
@@ -126,12 +126,10 @@ class App extends React.Component {
   }
 
   handleCityDelete(cityToDelete) {
-    let cities = [...this.state.cities];
-    let weathers = JSON.parse(JSON.stringify(this.state.weathers));
-
-    const cityIndex = cities.findIndex(city => city === cityToDelete);
-    cities.splice(cityIndex, 1);
-    weathers.splice(cityIndex, 1);
+    const cities = this.state.cities.filter(city => city !== cityToDelete);
+    const weathers = this.state.weathers.filter(
+      city => city[0].city_name !== cityToDelete
+    );
 
     this.saveCitiesToLocalStorage(cities);
     this.setState({ cities: cities, weathers: weathers });
@@ -166,7 +164,6 @@ class App extends React.Component {
           {this.state.weathers.map((weather, index) => (
             <WeatherCard
               key={index}
-              city={this.state.cities[index]}
               data={weather}
               onCityDelete={city => this.handleCityDelete(city)}
             />
