@@ -1,3 +1,6 @@
 .title {
   flex-grow: 1;
 }
+.cardContainer {
+  margin-top: 4.5em;
+}

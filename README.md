@@ -4,14 +4,14 @@ Fetch real-time weather of choosen cities.
 
 This app is under development
 
-The real-time weather is fetched from [weatherbit.io] API
+The real-time weather is fetched from [weatherbit.io](https://weatherbit.io) API
 
 ## TODO:
 
 I will add the following days
 
 - [x] Add city
-- [ ] Delete city
+- [x] Delete city
 - [ ] Save city list in local storage
 - [ ] Get current city based on location
 - [ ] Add internalization
@@ -28,4 +28,4 @@ I will add the following days
 
 - Go to the project directory
 - Execute `npm start`
-- Open [http://localhost:3000] to view it in the browser.
+- Open http://localhost:3000 to view it in the browser.

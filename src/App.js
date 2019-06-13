@@ -8,17 +8,20 @@ import AddCityDialog from './AddCityDialog';
 
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+
 const initialState = {
   error: null,
   isLoaded: false,
   weathers: [],
   cities: ['Paris']
 };
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
   }
+
   fetchCities(cities) {
     this.setState({
       weathers: initialState.weathers
@@ -53,10 +56,20 @@ class App extends React.Component {
     this.setState({ cities: newCities });
     this.fetchCities(newCities);
   }
+  handleCityDelete(cityToDelete) {
+    let cities = [...this.state.cities];
+    let weathers = JSON.parse(JSON.stringify(this.state.weathers));
+
+    const cityIndex = cities.findIndex(city => city === cityToDelete);
+    cities.splice(cityIndex, 1);
+    weathers.splice(cityIndex, 1);
+
+    this.setState({ cities: cities, weathers: weathers });
+  }
   render() {
     return (
       <div className="container">
-        <AppBar position="static">
+        <AppBar position="fixed" className="header">
           <Toolbar>
             <Typography variant="h6" color="inherit" className="title">
               Weather App
@@ -64,9 +77,16 @@ class App extends React.Component {
             <AddCityDialog onCityAdd={city => this.handleCityAdd(city)} />
           </Toolbar>
         </AppBar>
-        {this.state.weathers.map((weather, index) => (
-          <WeatherCard key={index} data={weather} />
-        ))}
+        <div className="cardContainer">
+          {this.state.weathers.map((weather, index) => (
+            <WeatherCard
+              key={index}
+              city={this.state.cities[index]}
+              data={weather}
+              onCityDelete={city => this.handleCityDelete(city)}
+            />
+          ))}
+        </div>
       </div>
     );
   }

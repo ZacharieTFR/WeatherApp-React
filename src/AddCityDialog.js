@@ -33,11 +33,23 @@ export default function AddCityDialog(props) {
           <AddLocation />
         </Button>
       </Tooltip>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">Add new city</DialogTitle>
         <form id="addCityForm" onSubmit={handleSubmit}>
           <DialogContent>
-            <TextField autoFocus required margin="dense" id="cityName" label="City Name" type="text" fullWidth />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="cityName"
+              label="City Name"
+              type="text"
+              fullWidth
+            />
           </DialogContent>
           <DialogActions>
             <Button type="submit" color="primary">
