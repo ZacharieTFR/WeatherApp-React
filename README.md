@@ -12,7 +12,7 @@ I will add in the following days:
 
 - [x] Add city
 - [x] Delete city
-- [ ] Save city list in local storage
+- [x] Save cities in local storage
 - [x] Get current city based on location
 - [ ] Add internalization
 - [ ] Clean and optimize project

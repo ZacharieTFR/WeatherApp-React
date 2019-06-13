@@ -5,6 +5,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import './App.css';
 import AddCityDialog from './AddCityDialog';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
@@ -22,6 +25,25 @@ class App extends React.Component {
     this.state = initialState;
   }
 
+  getCitiesFromLocalStorage() {
+    // Check for Web Storage support.
+    if (typeof Storage == 'undefined') {
+      return;
+    }
+    const ls_cities = JSON.parse(localStorage.getItem('cities'));
+    if (ls_cities) {
+      this.setState({ cities: ls_cities });
+      return 1;
+    }
+    return;
+  }
+
+  saveCitiesToLocalStorage(cities) {
+    if (typeof Storage !== 'undefined') {
+      localStorage.setItem('cities', JSON.stringify(cities));
+    }
+  }
+
   getUserCoords() {
     let that = this;
     if (navigator.geolocation) {
@@ -31,16 +53,12 @@ class App extends React.Component {
         },
         function(error) {
           console.warn(error.message);
-          that.setState({
-            cities: ['Paris']
-          });
-          that.fetchCitiesWeathers(that.state.cities);
+          that.handleCityAdd('Paris');
         }
       );
     } else {
       // browser doesn't support geoloc
-      this.setState({ cities: ['Paris'] });
-      this.fetchCitiesWeathers(this.state.cities);
+      this.handleCityAdd('Paris');
     }
   }
 
@@ -57,15 +75,7 @@ class App extends React.Component {
       .then(res => res.json())
       .then(
         result => {
-          let weathers = JSON.parse(JSON.stringify(this.state.weathers));
-          weathers.push(result.data);
-          let newCities = [];
-          newCities.push(result.data[0].city_name);
-          this.setState({
-            isLoaded: true,
-            cities: newCities,
-            weathers: weathers
-          });
+          this.handleCityAdd(result.data[0].city_name);
         },
         error => {
           this.setState({
@@ -77,15 +87,12 @@ class App extends React.Component {
   }
 
   fetchCitiesWeathers(cities) {
-    this.setState({
-      weathers: initialState.weathers
-    });
+    let weathers = [];
     cities.forEach(city => {
       fetch(API_ENDPOINT + '?lang=en&city=' + city + '&key=' + API_KEY)
         .then(res => res.json())
         .then(
           result => {
-            let weathers = JSON.parse(JSON.stringify(this.state.weathers));
             weathers.push(result.data);
             this.setState({
               isLoaded: true,
@@ -103,14 +110,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // Get user coords if user refuse set Paris as default
+    const x = this.getCitiesFromLocalStorage();
     this.getUserCoords();
   }
 
   handleCityAdd(city) {
     let newCities = [...this.state.cities];
-    newCities.push(city);
-    this.setState({ cities: newCities });
+    const alreadyExist = newCities.find(cty => cty === city);
+    if (!alreadyExist) {
+      newCities.push(city);
+      this.saveCitiesToLocalStorage(newCities);
+      this.setState({ cities: newCities });
+    }
     this.fetchCitiesWeathers(newCities);
   }
 
@@ -122,7 +133,12 @@ class App extends React.Component {
     cities.splice(cityIndex, 1);
     weathers.splice(cityIndex, 1);
 
+    this.saveCitiesToLocalStorage(cities);
     this.setState({ cities: cities, weathers: weathers });
+  }
+
+  handleRefresh() {
+    this.fetchCitiesWeathers(this.state.cities);
   }
 
   render() {
@@ -133,6 +149,16 @@ class App extends React.Component {
             <Typography variant="h6" color="inherit" className="title">
               Weather App
             </Typography>
+            <Tooltip title="Refresh weather" aria-label="Refresh weather">
+              <IconButton
+                aria-label="Refresh"
+                onClick={() => {
+                  this.handleRefresh();
+                }}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
             <AddCityDialog onCityAdd={city => this.handleCityAdd(city)} />
           </Toolbar>
         </AppBar>
