@@ -1,15 +1,19 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
+
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 
+import { useTranslation } from 'react-i18next';
+
 export default function AddCityDialog(props) {
+  const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
 
   function handleClickOpen() {
@@ -29,7 +33,7 @@ export default function AddCityDialog(props) {
 
   return (
     <div>
-      <Tooltip title="Add new city" aria-label="Add new city">
+      <Tooltip title={t('add_city')} aria-label={t('add_city')}>
         <Fab color="secondary" onClick={handleClickOpen}>
           <AddIcon />
         </Fab>
@@ -39,7 +43,7 @@ export default function AddCityDialog(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add new city</DialogTitle>
+        <DialogTitle id="form-dialog-title">{t('add_city')}</DialogTitle>
         <form id="addCityForm" onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
@@ -47,17 +51,17 @@ export default function AddCityDialog(props) {
               required
               margin="dense"
               id="cityName"
-              label="City Name"
+              label={t('city_name')}
               type="text"
               fullWidth
             />
           </DialogContent>
           <DialogActions>
             <Button type="submit" color="primary">
-              Save
+              {t('add')}
             </Button>
             <Button onClick={handleClose} color="primary">
-              Cancel
+              {t('cancel')}
             </Button>
           </DialogActions>
         </form>

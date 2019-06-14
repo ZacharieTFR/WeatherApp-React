@@ -1,17 +1,16 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-
-import ClearIcon from '@material-ui/icons/Clear';
-import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-
 import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
+import ClearIcon from '@material-ui/icons/Clear';
 import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
   deleteBtn: {
@@ -20,6 +19,7 @@ const useStyles = makeStyles({
 });
 
 export default function DeleteCityDialog(props) {
+  const { t } = useTranslation();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -38,9 +38,9 @@ export default function DeleteCityDialog(props) {
 
   return (
     <div>
-      <Tooltip title="Delete city" aria-label="Delete city">
+      <Tooltip title={t('delete_city')} aria-label={t('delete_city')}>
         <IconButton
-          aria-label="Delete"
+          aria-label={t('delete')}
           className={classes.deleteBtn}
           onClick={handleClickOpen}
         >
@@ -58,19 +58,19 @@ export default function DeleteCityDialog(props) {
             id="alert-dialog-title"
             style={{ textTransform: 'capitalize' }}
           >
-            Delete {props.city} ?
+            {t('delete')} {props.city} ?
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              This city will be definitely deleted
+              {t('confirm_delete')}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Disagree
+            <Button onClick={handleDelete} color="primary">
+              {t('delete')}
             </Button>
-            <Button onClick={handleDelete} color="primary" autoFocus>
-              Agree
+            <Button onClick={handleClose} color="primary" autoFocus>
+              {t('cancel')}
             </Button>
           </DialogActions>
         </Dialog>

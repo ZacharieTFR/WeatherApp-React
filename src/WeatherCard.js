@@ -1,10 +1,12 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
+
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import DeleteCityDialog from './DeleteCityDialog';
+import Card from '@material-ui/core/Card';
+import Grid from '@material-ui/core/Grid';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
   card: {
@@ -21,13 +23,17 @@ const useStyles = makeStyles({
 const API_ICONS_URL = process.env.REACT_APP_API_ICONS_URL;
 
 export default function WeatherCard(props) {
+  const { t } = useTranslation();
   const classes = useStyles();
+
   if (!props) {
     return;
   }
+
   function handleCityDelete(city) {
     props.onCityDelete(city);
   }
+
   const weatherData = props.data[0];
   const dateTime = new Date(weatherData.last_ob_time);
   const date = dateTime.toLocaleDateString();
@@ -61,19 +67,19 @@ export default function WeatherCard(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Sunrise: </span>
+              <span className={classes.lightGrey}>{t('sunrise')}: </span>
               {weatherData.sunrise}
             </Typography>
             <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Sunset: </span>
+              <span className={classes.lightGrey}>{t('sunset')}: </span>
               {weatherData.sunset}
             </Typography>
             <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Wind: </span>
+              <span className={classes.lightGrey}>{t('wind')}: </span>
               {windSpeed} m/s, {windDirection}
             </Typography>
             <Typography variant="subtitle1">
-              <span className={classes.lightGrey}>Humidity: </span>
+              <span className={classes.lightGrey}>{t('humidity')}: </span>
               {weatherData.rh} %
             </Typography>
           </Grid>

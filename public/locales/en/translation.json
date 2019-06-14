@@ -1,0 +1,15 @@
+{
+  "refresh": "Refresh weather",
+  "add_city": "Add new city",
+  "city_name": "City name",
+  "delete_city": "Delete city",
+  "confirm_delete": "confirm_delete",
+  "languages": "Languages",
+  "add": "Add ",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "sunrise": "Sunrise",
+  "sunset": "Sunset",
+  "wind": "Wind",
+  "humidity": "Humidity"
+}
