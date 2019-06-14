@@ -5,15 +5,15 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LangIcon from '@material-ui/icons/Language';
 import Toolbar from '@material-ui/core/Toolbar';
+import { withTranslation } from 'react-i18next';
+import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
+import Select from '@material-ui/core/Select';
 import AppBar from '@material-ui/core/AppBar';
 import AddCityDialog from './AddCityDialog';
 import WeatherCard from './WeatherCard';
-import './App.css';
-import { withTranslation } from 'react-i18next';
-import i18n from './i18n';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import i18n from '../i18n';
+
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
@@ -22,19 +22,18 @@ class WeatherApp extends React.Component {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
       weathers: [],
       cities: []
     };
   }
-  getCitiesFromLocalStorage() {
+  getCitiesSaved() {
     // Check for Web Storage support.
     if (typeof Storage == 'undefined') {
       return;
     }
-    const ls_cities = JSON.parse(localStorage.getItem('cities'));
-    if (ls_cities) {
-      this.setState({ cities: ls_cities });
+    const localStorage_cities = JSON.parse(localStorage.getItem('cities'));
+    if (localStorage_cities) {
+      this.setState({ cities: localStorage_cities });
     }
   }
 
@@ -52,6 +51,7 @@ class WeatherApp extends React.Component {
           that.fetchCoordsWeather(position.coords);
         },
         function(error) {
+          // Set Paris as default city if any error occurs (user decline,timeout etc..)
           console.warn(error.message);
           that.handleCityAdd('Paris');
         }
@@ -79,11 +79,22 @@ class WeatherApp extends React.Component {
         },
         error => {
           this.setState({
-            isLoaded: true,
             error
           });
         }
       );
+  }
+
+  // Cities with several names depending on the language can create issues.
+  // i.e if we add Pékin the weather API translate it to Beijing.
+  // To be coherent only one is kept.
+  replaceCityTrad(city, cityTrad) {
+    if (city !== cityTrad) {
+      const cities = [...this.state.cities];
+      const index = cities.indexOf(city);
+      cities[index] = cityTrad;
+      this.setState({ cities: cities });
+    }
   }
 
   fetchCitiesWeathers(cities) {
@@ -101,15 +112,14 @@ class WeatherApp extends React.Component {
         .then(res => res.json())
         .then(
           result => {
+            this.replaceCityTrad(city, result.data[0].city_name);
             weathers.push(result.data);
             this.setState({
-              isLoaded: true,
               weathers: weathers
             });
           },
           error => {
             this.setState({
-              isLoaded: true,
               error
             });
           }
@@ -118,19 +128,19 @@ class WeatherApp extends React.Component {
   }
 
   componentDidMount() {
-    this.getCitiesFromLocalStorage();
+    this.getCitiesSaved();
     this.getUserCoords();
   }
 
   handleCityAdd(city) {
-    let newCities = this.state.cities;
-    const alreadyExist = newCities.find(cty => cty === city);
+    let cities = this.state.cities;
+    const alreadyExist = cities.find(cty => cty === city);
     if (!alreadyExist) {
-      newCities.push(city);
-      this.saveCitiesToLocalStorage(newCities);
-      this.setState({ cities: newCities });
+      cities.push(city);
+      this.saveCitiesToLocalStorage(cities);
+      this.setState({ cities: cities });
     }
-    this.fetchCitiesWeathers(newCities);
+    this.fetchCitiesWeathers(cities);
   }
 
   handleCityDelete(cityToDelete) {
@@ -145,21 +155,23 @@ class WeatherApp extends React.Component {
   handleRefresh() {
     this.fetchCitiesWeathers(this.state.cities);
   }
+
   handleChangeLang(event) {
     const newLang = event.target.value;
     i18n.changeLanguage(newLang);
   }
+
   render() {
     const { t } = this.props;
+
     return (
       <div className="container">
         <Suspense fallback={<div>Loading</div>}>
           <AppBar position="fixed" className="header">
             <Toolbar>
-              <Typography variant="h6" color="inherit" className="title">
+              <Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
                 Weather App
               </Typography>
-
               <Select
                 onChange={e => {
                   this.handleChangeLang(e);
@@ -183,7 +195,7 @@ class WeatherApp extends React.Component {
               <AddCityDialog onCityAdd={city => this.handleCityAdd(city)} />
             </Toolbar>
           </AppBar>
-          <div className="cardContainer">
+          <div style={{ marginTop: '4.5em' }}>
             {this.state.weathers.map((weather, index) => (
               <WeatherCard
                 key={index}

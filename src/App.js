@@ -1,8 +1,6 @@
 import React, { Suspense } from 'react';
 
-import './App.css';
-
-import WeatherApp from './WeatherApp';
+import WeatherApp from './components/WeatherApp';
 function App() {
   return (
     <div className="App">
