@@ -1,0 +1,15 @@
+{
+  "refresh": "Actualiser la météo",
+  "add_city": "Ajouter une nouvelle ville",
+  "city_name": "Nom de la ville",
+  "delete_city": "Supprimer la ville",
+  "confirm_delete": "Cette ville sera définitivement supprimée",
+  "languages": "Langues",
+  "add": "Ajouter ",
+  "delete": "Supprimer",
+  "cancel": "Annuler",
+  "sunrise": "Lever du soleil",
+  "sunset": "Coucher du soleil",
+  "wind": "Vent",
+  "humidity": "Humidité"
+}
