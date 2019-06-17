@@ -1,6 +1,6 @@
 # Weather app
 
-Simple PWA fetching current weather of chosen cities.
+Simple PWA fetching current weather of chosen cities. Demo [here](https://zacharietfr.github.io/WeatherApp-React/)
 
 This app was developed using [ReactJS](https://reactjs.org/) + [Material-Ui](https://material-ui.com/) and [i18next](https://react.i18next.com/).
 
