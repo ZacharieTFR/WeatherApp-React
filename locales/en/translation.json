@@ -11,5 +11,6 @@
   "sunrise": "Sunrise",
   "sunset": "Sunset",
   "wind": "Wind",
-  "humidity": "Humidity"
+  "humidity": "Humidity",
+  "day_names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 }

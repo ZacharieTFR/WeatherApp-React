@@ -11,5 +11,6 @@
   "sunrise": "Lever du soleil",
   "sunset": "Coucher du soleil",
   "wind": "Vent",
-  "humidity": "Humidité"
+  "humidity": "Humidité",
+  "day_names": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
 }
