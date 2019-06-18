@@ -65,6 +65,7 @@ class WeatherApp extends React.Component {
   fetchCoordsWeather(coords) {
     fetch(
       API_ENDPOINT +
+        'current/' +
         '?lat=' +
         coords.latitude +
         '&lon=' +
@@ -102,6 +103,7 @@ class WeatherApp extends React.Component {
     cities.forEach(city => {
       fetch(
         API_ENDPOINT +
+          'current/' +
           '?lang=' +
           i18n.language +
           '&city=' +

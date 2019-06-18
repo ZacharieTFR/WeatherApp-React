@@ -7,6 +7,7 @@ import DeleteCityDialog from './DeleteCityDialog';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import { useTranslation } from 'react-i18next';
+import ForecastDisplay from './ForecastDisplay';
 
 const useStyles = makeStyles({
   card: {
@@ -35,6 +36,8 @@ export default function WeatherCard(props) {
   }
 
   const weatherData = props.data[0];
+  const cityName = weatherData.city_name;
+  const country = weatherData.country_code;
   const dateTime = new Date(weatherData.last_ob_time);
   const date = dateTime.toLocaleDateString();
   const time = dateTime.toLocaleTimeString();
@@ -48,7 +51,7 @@ export default function WeatherCard(props) {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <DeleteCityDialog
-              onCityDelete={() => handleCityDelete(weatherData.city_name)}
+              onCityDelete={() => handleCityDelete(cityName)}
               city={weatherData.city_name}
             />
             <Typography variant="h5">
@@ -58,14 +61,14 @@ export default function WeatherCard(props) {
               {date}, {time}
             </Typography>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={7}>
             <img align="left" src={iconUrl} alt="weather icon" />
-            <Typography variant="h3">{weatherData.temp}°C</Typography>
+            <Typography variant="h2">{weatherData.temp}°</Typography>
             <Typography variant="subtitle1">
               {weatherData.weather.description}
             </Typography>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={5}>
             <Typography variant="subtitle1">
               <span className={classes.lightGrey}>{t('sunrise')}: </span>
               {weatherData.sunrise}
@@ -84,6 +87,7 @@ export default function WeatherCard(props) {
             </Typography>
           </Grid>
         </Grid>
+        <ForecastDisplay city={cityName} country={country} />
       </CardContent>
     </Card>
   );
