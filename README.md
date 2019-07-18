@@ -1,8 +1,8 @@
 # Weather PWA
 
-Simple PWA fetching current weather and weekly forecast of chosen cities. Demo is [here](https://zacharietfr.github.io/WeatherApp-React/)
+Simple Redux PWA fetching current weather and weekly forecast of chosen cities. Demo is [here](https://zacharietfr.github.io/WeatherApp-React/)
 
-This app was developed using [ReactJS](https://reactjs.org/) + [Material-Ui](https://material-ui.com/) and [i18next](https://react.i18next.com/).
+This app was developed using [ReactJS](https://reactjs.org/), [Redux](https://redux.js.org/), [Material-Ui](https://material-ui.com/) and [i18next](https://react.i18next.com/).
 
 The weather is fetched from [weatherbit.io](https://weatherbit.io) API.
 
@@ -10,9 +10,9 @@ The weather is fetched from [weatherbit.io](https://weatherbit.io) API.
 
 - Get current weather and forecast based on user's location
 - Add any city to the app and get its weather
-- Remove a city from the app
-- Cities are saved in localStorage
-- Language can be switched in French or English
+- Remove a city from the list
+- Cities are saved in localStorage throught Redux State
+- Language can be set to French or English
 
 ## How to run
 
