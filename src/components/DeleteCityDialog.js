@@ -1,5 +1,4 @@
 import React from 'react';
-
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,6 +10,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { deleteCity } from '../actions';
 
 const useStyles = makeStyles({
   deleteBtn: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function DeleteCityDialog(props) {
+function DeleteCityDialog(props) {
   const { t } = useTranslation();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -32,7 +33,7 @@ export default function DeleteCityDialog(props) {
   }
 
   function handleDelete(event) {
-    props.onCityDelete(props.city);
+    props.deleteCity(props.city);
     setOpen(false);
   }
 
@@ -78,3 +79,19 @@ export default function DeleteCityDialog(props) {
     </div>
   );
 }
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteCity: city => {
+      dispatch(deleteCity(city));
+    }
+  };
+};
+const mapStateToProps = state => {
+  return {
+    cities: state.cities
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeleteCityDialog);

@@ -1,161 +1,65 @@
 import React, { Suspense } from 'react';
-
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import ErrorIcon from '@material-ui/icons/Error';
+import CloseIcon from '@material-ui/icons/Close';
 import LangIcon from '@material-ui/icons/Language';
 import Toolbar from '@material-ui/core/Toolbar';
-import { withTranslation } from 'react-i18next';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Select from '@material-ui/core/Select';
 import AppBar from '@material-ui/core/AppBar';
+import Snackbar from '@material-ui/core/Snackbar';
+import { withStyles } from '@material-ui/styles';
+import { withTranslation } from 'react-i18next';
+import compose from 'recompose/compose';
+import i18n from '../i18n';
+import { connect } from 'react-redux';
+import {
+  getCitiesWeathers,
+  fetchCityAndWeatherFromCoords,
+  clearError
+} from '../actions/index';
+
 import AddCityDialog from './AddCityDialog';
 import WeatherCard from './WeatherCard';
-import i18n from '../i18n';
 
-const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
-const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-
+const styles = {
+  root: {
+    backgroundColor: '#D32F2F',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  message: {
+    paddingLeft: '12px',
+    display: 'flex',
+    alignItems: 'center'
+  }
+};
 class WeatherApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      weathers: [],
-      cities: []
-    };
-  }
-  getCitiesSaved() {
-    // Check for Web Storage support.
-    if (typeof Storage == 'undefined') {
-      return;
-    }
-    const localStorage_cities = JSON.parse(localStorage.getItem('cities'));
-    if (localStorage_cities) {
-      this.setState({ cities: localStorage_cities });
-    }
-  }
-
-  saveCitiesToLocalStorage(cities) {
-    if (typeof Storage !== 'undefined') {
-      localStorage.setItem('cities', JSON.stringify(cities));
-    }
-  }
-
-  getUserCoords() {
+  getUserCoordsAndWeather() {
     let that = this;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         function(position) {
-          that.fetchCoordsWeather(position.coords);
+          that.props.fetchCityAndWeatherFromCoords(position.coords);
         },
         function(error) {
-          // Set Paris as default city if any error occurs (user decline,timeout etc..)
+          // if any error occurs (user decline,timeout etc..)
           console.warn(error.message);
-          that.handleCityAdd('Paris');
         }
       );
-    } else {
-      // browser doesn't support geoloc
-      this.handleCityAdd('Paris');
     }
-  }
-
-  fetchCoordsWeather(coords) {
-    fetch(
-      API_ENDPOINT +
-        'current/' +
-        '?lat=' +
-        coords.latitude +
-        '&lon=' +
-        coords.longitude +
-        '&key=' +
-        API_KEY
-    )
-      .then(res => res.json())
-      .then(
-        result => {
-          this.handleCityAdd(result.data[0].city_name);
-        },
-        error => {
-          this.setState({
-            error
-          });
-        }
-      );
-  }
-
-  // Cities with several names depending on the language can create issues.
-  // i.e if we add Pékin the weather API translate it to Beijing.
-  // To be coherent only one is kept.
-  replaceCityTrad(city, cityTrad) {
-    if (city !== cityTrad) {
-      const cities = [...this.state.cities];
-      const index = cities.indexOf(city);
-      cities[index] = cityTrad;
-      this.setState({ cities: cities });
-    }
-  }
-
-  fetchCitiesWeathers(cities) {
-    let weathers = [];
-    cities.forEach(city => {
-      fetch(
-        API_ENDPOINT +
-          'current/' +
-          '?lang=' +
-          i18n.language +
-          '&city=' +
-          city +
-          '&key=' +
-          API_KEY
-      )
-        .then(res => res.json())
-        .then(
-          result => {
-            this.replaceCityTrad(city, result.data[0].city_name);
-            weathers.push(result.data);
-            this.setState({
-              weathers: weathers
-            });
-          },
-          error => {
-            this.setState({
-              error
-            });
-          }
-        );
-    });
   }
 
   componentDidMount() {
-    this.getCitiesSaved();
-    this.getUserCoords();
-  }
-
-  handleCityAdd(city) {
-    let cities = this.state.cities;
-    const alreadyExist = cities.find(cty => cty === city);
-    if (!alreadyExist) {
-      cities.push(city);
-      this.saveCitiesToLocalStorage(cities);
-      this.setState({ cities: cities });
-    }
-    this.fetchCitiesWeathers(cities);
-  }
-
-  handleCityDelete(cityToDelete) {
-    const cities = this.state.cities.filter(city => city !== cityToDelete);
-    const weathers = this.state.weathers.filter(
-      city => city[0].city_name !== cityToDelete
-    );
-    this.saveCitiesToLocalStorage(cities);
-    this.setState({ cities: cities, weathers: weathers });
+    this.getUserCoordsAndWeather();
+    this.props.getCitiesWeathers();
   }
 
   handleRefresh() {
-    this.fetchCitiesWeathers(this.state.cities);
+    this.props.getCitiesWeathers();
   }
 
   handleChangeLang(event) {
@@ -163,17 +67,22 @@ class WeatherApp extends React.Component {
     i18n.changeLanguage(newLang);
   }
 
+  handleCloseSnackError() {
+    this.props.clearError();
+  }
+
   render() {
     const { t } = this.props;
-
+    const classes = this.props.classes;
     return (
-      <div className="container">
+      <React.Fragment>
         <Suspense fallback={<div>Loading</div>}>
           <AppBar position="fixed" className="header">
             <Toolbar>
               <Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
                 Weather App
               </Typography>
+
               <Select
                 onChange={e => {
                   this.handleChangeLang(e);
@@ -194,21 +103,73 @@ class WeatherApp extends React.Component {
                   <RefreshIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <AddCityDialog onCityAdd={city => this.handleCityAdd(city)} />
+              <AddCityDialog />
             </Toolbar>
           </AppBar>
           <div style={{ marginTop: '4.5em' }}>
-            {this.state.weathers.map((weather, index) => (
-              <WeatherCard
-                key={index}
-                data={weather}
-                onCityDelete={city => this.handleCityDelete(city)}
-              />
+            {this.props.cities.map((city, index) => (
+              <WeatherCard key={index} city={city} />
             ))}
           </div>
+          <Snackbar
+            open={Boolean(this.props.error)}
+            ContentProps={{
+              classes: {
+                root: classes.root,
+                message: classes.message
+              }
+            }}
+            message={
+              <React.Fragment>
+                <ErrorIcon />
+                <span className={classes.message}>{t(this.props.error)}</span>
+                <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  onClick={() => {
+                    this.handleCloseSnackError();
+                  }}
+                >
+                  <CloseIcon size="small" />
+                </IconButton>
+              </React.Fragment>
+            }
+          />
         </Suspense>
-      </div>
+      </React.Fragment>
     );
   }
 }
-export default withTranslation()(WeatherApp);
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getCitiesWeathers: () => {
+      dispatch(getCitiesWeathers());
+    },
+    fetchCityAndWeatherFromCoords: coords => {
+      dispatch(fetchCityAndWeatherFromCoords(coords));
+    },
+    clearError: () => {
+      dispatch(clearError());
+    }
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    cities: state.cities,
+    loadingWeather: state.loadingWeather,
+    loadingForecast: state.loadingForecast,
+    error: state.error
+  };
+};
+
+export default compose(
+  withTranslation(),
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(WeatherApp);

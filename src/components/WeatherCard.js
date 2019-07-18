@@ -1,12 +1,12 @@
 import React from 'react';
-
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import DeleteCityDialog from './DeleteCityDialog';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { useTranslation } from 'react-i18next';
+import DeleteCityDialog from './DeleteCityDialog';
 import ForecastDisplay from './ForecastDisplay';
 
 const useStyles = makeStyles({
@@ -27,17 +27,11 @@ export default function WeatherCard(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  if (!props) {
-    return;
+  if (!props || !props.city.weather) {
+    return null;
   }
 
-  function handleCityDelete(city) {
-    props.onCityDelete(city);
-  }
-
-  const weatherData = props.data[0];
-  const cityName = weatherData.city_name;
-  const country = weatherData.country_code;
+  const weatherData = props.city;
   const dateTime = new Date(weatherData.last_ob_time);
   const date = dateTime.toLocaleDateString();
   const time = dateTime.toLocaleTimeString();
@@ -50,10 +44,7 @@ export default function WeatherCard(props) {
       <CardContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <DeleteCityDialog
-              onCityDelete={() => handleCityDelete(cityName)}
-              city={weatherData.city_name}
-            />
+            <DeleteCityDialog city={weatherData.city_name} />
             <Typography variant="h5">
               {weatherData.city_name}, {weatherData.country_code}
             </Typography>
@@ -87,7 +78,7 @@ export default function WeatherCard(props) {
             </Typography>
           </Grid>
         </Grid>
-        <ForecastDisplay city={cityName} country={country} />
+        <ForecastDisplay city={props.city} />
       </CardContent>
     </Card>
   );
