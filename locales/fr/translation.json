@@ -12,5 +12,7 @@
   "sunset": "Coucher du soleil",
   "wind": "Vent",
   "humidity": "Humidité",
-  "day_names": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+  "day_names": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+  "Failed to fetch": "Erreur lors de la récupération de la météo, problèmes de réseau détectés",
+  "alreadyExist": "Cette ville existe déjà dans la liste"
 }

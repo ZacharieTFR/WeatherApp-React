@@ -12,5 +12,7 @@
   "sunset": "Sunset",
   "wind": "Wind",
   "humidity": "Humidity",
-  "day_names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  "day_names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  "Failed to fetch": "Error when retrieving the weather, network problems detected",
+  "alreadyExist": "This city is already in the list"
 }
