@@ -85,6 +85,7 @@ function AddCityDialog(props) {
               required
               margin="dense"
               id="cityName"
+              inputProps={{ pattern: '^([A-zÀ-ÖØ-öø-ÿ-])*$' }}
               label={t('city_name')}
               type="text"
               fullWidth
